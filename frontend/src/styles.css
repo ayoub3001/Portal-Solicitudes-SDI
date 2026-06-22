@@ -1,0 +1,88 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.fc-shell .fc {
+  --fc-border-color: #cbd5e1;
+  --fc-button-bg-color: #0f172a;
+  --fc-button-border-color: #0f172a;
+  --fc-button-hover-bg-color: #1e293b;
+  --fc-button-hover-border-color: #1e293b;
+  --fc-button-active-bg-color: #334155;
+  --fc-button-active-border-color: #334155;
+  --fc-today-bg-color: rgba(34, 211, 238, 0.08);
+  --fc-page-bg-color: #ffffff;
+  --fc-neutral-bg-color: #f8fafc;
+  font-family: var(--font-sans);
+}
+
+.fc-shell .fc .fc-toolbar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.fc-shell .fc .fc-col-header-cell-cushion,
+.fc-shell .fc .fc-daygrid-day-number {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.fc-request-event {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.125rem 0.25rem;
+  line-height: 1.2;
+}
+
+.fc-request-event__status {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.fc-request-event__title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes login-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes login-pulse-line {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.login-fade-up {
+  animation: login-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.login-pulse-line {
+  animation: login-pulse-line 2.4s ease-in-out infinite;
+}

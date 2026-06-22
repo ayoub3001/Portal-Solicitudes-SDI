@@ -1,0 +1,307 @@
+<div class="min-h-dvh grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] bg-[#0b1018] font-sans text-slate-100">
+  <!-- Panel de marca: contexto del producto -->
+  <aside
+    class="relative overflow-hidden border-b border-cyan-500/10 lg:border-b-0 lg:border-r lg:border-cyan-500/10"
+    aria-hidden="true"
+  >
+    <div
+      class="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,#0b1018_0%,#111827_45%,#0d1a24_100%)]"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-0 opacity-[0.07]"
+      style="
+        background-image:
+          linear-gradient(rgba(34, 211, 238, 0.5) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(34, 211, 238, 0.5) 1px, transparent 1px);
+        background-size: 48px 48px;
+      "
+    ></div>
+    <div
+      class="pointer-events-none absolute -right-24 top-1/3 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl"
+    ></div>
+
+    <div class="relative flex min-h-[220px] flex-col justify-between p-6 sm:p-10 lg:min-h-dvh lg:p-14">
+      <div class="login-fade-up">
+        <div class="flex items-center gap-3">
+          <div
+            class="flex h-10 w-10 items-center justify-center border border-cyan-400/30 bg-cyan-400/5"
+          >
+            <svg
+              class="h-5 w-5 text-cyan-300"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="square"
+                d="M4 7h16M4 12h10M4 17h14"
+              />
+            </svg>
+          </div>
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-cyan-400/80">
+              Sistema interno
+            </p>
+            <p class="text-sm font-medium text-slate-300">Portal de Solicitudes</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 hidden max-w-lg lg:block login-fade-up" style="animation-delay: 80ms">
+        <h1 class="text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.05] tracking-tight text-white">
+          Gestiona solicitudes<br />
+          <span class="text-cyan-300">con trazabilidad</span>
+        </h1>
+        <p class="mt-5 max-w-md text-base leading-relaxed text-slate-400">
+          Herramienta corporativa para crear, firmar y dar seguimiento a solicitudes internas.
+          Diseñada para equipos que necesitan velocidad sin perder control.
+        </p>
+
+        <ol class="mt-12 space-y-0">
+          @for (step of workflowSteps; track step.code; let last = $last) {
+            <li class="group flex gap-5">
+              <div class="flex flex-col items-center">
+                <span
+                  class="font-mono text-xs text-cyan-400/90 transition-colors group-hover:text-cyan-300"
+                >
+                  {{ step.code }}
+                </span>
+                @if (!last) {
+                  <span
+                    class="login-pulse-line my-2 w-px flex-1 min-h-[2.5rem] bg-gradient-to-b from-cyan-400/60 to-cyan-400/10"
+                  ></span>
+                }
+              </div>
+              <div class="pb-8">
+                <p class="text-sm font-semibold text-slate-200">{{ step.label }}</p>
+                <p class="mt-1 text-sm text-slate-500">{{ step.detail }}</p>
+              </div>
+            </li>
+          }
+        </ol>
+      </div>
+
+      <p
+        class="mt-6 font-mono text-[11px] uppercase tracking-widest text-slate-600 lg:mt-0 login-fade-up"
+        style="animation-delay: 160ms"
+      >
+        Empresa tecnológica · v1.0
+      </p>
+    </div>
+  </aside>
+
+  <!-- Panel de acceso: acción principal -->
+  <main class="flex flex-col bg-[#eef1f4] text-slate-900">
+    <div class="flex flex-1 flex-col justify-center px-6 py-10 sm:px-12 lg:px-16 xl:px-20">
+      <div class="mx-auto w-full max-w-[26rem] login-fade-up" style="animation-delay: 120ms">
+        <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500">
+          Acceso corporativo
+        </p>
+        <h2 class="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
+          Identifícate
+        </h2>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">
+          Usa tus credenciales de empleado para entrar al portal.
+        </p>
+
+        @if (sessionExpired()) {
+          <div
+            class="mt-6 border-l-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+            role="alert"
+          >
+            Tu sesión ha expirado por seguridad. Vuelve a iniciar sesión.
+          </div>
+        }
+
+        @if (isInactiveUser()) {
+          <div
+            class="mt-6 border-l-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+            role="alert"
+          >
+            <p class="font-semibold">Cuenta inactiva</p>
+            <p class="mt-1 leading-relaxed">{{ errorMessage() }}</p>
+            <p class="mt-2 text-xs text-amber-800">
+              Si crees que es un error, contacta con
+              <span class="font-medium">RRHH</span> o
+              <span class="font-medium">Sistemas</span>.
+            </p>
+          </div>
+        } @else if (errorMessage()) {
+          <div
+            class="mt-6 border-l-2 border-red-500 bg-red-50 px-4 py-3 text-sm text-red-900"
+            role="alert"
+          >
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <form class="mt-8 space-y-7" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <div>
+            <label
+              for="email"
+              class="block font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500"
+            >
+              Correo corporativo
+            </label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="nombre@empresa.com"
+              class="mt-2 w-full border-0 border-b-2 border-slate-300 bg-transparent px-0 py-3 text-base text-slate-900 placeholder:text-slate-400 transition-colors focus:border-cyan-600 focus:outline-none focus:ring-0"
+              [class.border-red-500]="form.controls.email.touched && form.controls.email.invalid"
+            />
+            @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+              <p class="mt-2 text-xs text-red-600">El correo es obligatorio.</p>
+            }
+            @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+              <p class="mt-2 text-xs text-red-600">Introduce un correo válido.</p>
+            }
+          </div>
+
+          <div>
+            <div class="flex items-end justify-between gap-4">
+              <label
+                for="password"
+                class="block font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500"
+              >
+                Contraseña
+              </label>
+              <button
+                type="button"
+                class="font-mono text-[10px] uppercase tracking-wider text-slate-500 transition-colors hover:text-cyan-700"
+                (click)="togglePassword()"
+              >
+                {{ showPassword() ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              class="mt-2 w-full border-0 border-b-2 border-slate-300 bg-transparent px-0 py-3 text-base text-slate-900 placeholder:text-slate-400 transition-colors focus:border-cyan-600 focus:outline-none focus:ring-0"
+              [class.border-red-500]="form.controls.password.touched && form.controls.password.invalid"
+            />
+            @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+              <p class="mt-2 text-xs text-red-600">La contraseña es obligatoria.</p>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="group relative w-full overflow-hidden bg-slate-900 px-6 py-4 text-left transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+            [disabled]="loading()"
+          >
+            <span
+              class="absolute inset-y-0 left-0 w-1 bg-cyan-400 transition-all group-hover:w-1.5 group-disabled:w-1"
+            ></span>
+            <span class="flex items-center justify-between pl-3">
+              <span class="font-medium text-white">
+                {{ loading() ? 'Verificando credenciales…' : 'Entrar al portal' }}
+              </span>
+              @if (loading()) {
+                <span
+                  class="h-4 w-4 animate-spin rounded-full border-2 border-cyan-400/30 border-t-cyan-400"
+                  aria-hidden="true"
+                ></span>
+              } @else {
+                <svg
+                  class="h-5 w-5 text-cyan-400 transition-transform group-hover:translate-x-0.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="square" d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              }
+            </span>
+          </button>
+        </form>
+
+        @if (showDemoAccounts) {
+          <section
+            class="mt-8 border border-dashed border-slate-400/70 bg-slate-100/60 p-4"
+            aria-label="Acceso rápido para evaluación técnica"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                Inicio rápido · demo
+              </p>
+              <span class="font-mono text-[10px] text-slate-400">solo dev</span>
+            </div>
+            <p class="mt-2 text-xs leading-relaxed text-slate-600">
+              Credenciales de prueba del seeder. Un clic rellena y entra al portal.
+            </p>
+
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              @for (account of demoAccounts; track account.email) {
+                <button
+                  type="button"
+                  class="group flex min-w-0 flex-col gap-2 border border-slate-300/80 bg-white px-3 py-3 text-left transition-colors hover:border-cyan-600/50 hover:bg-cyan-50/40 disabled:cursor-not-allowed disabled:opacity-60"
+                  [disabled]="loading()"
+                  (click)="quickLogin(account)"
+                >
+                  <span class="flex items-center justify-between gap-2">
+                    <span
+                      class="flex h-7 w-7 shrink-0 items-center justify-center border font-mono text-[10px] uppercase"
+                      [class.border-cyan-600/40]="account.role === 'admin'"
+                      [class.bg-cyan-950]="account.role === 'admin'"
+                      [class.text-cyan-300]="account.role === 'admin'"
+                      [class.border-slate-400]="account.role === 'user'"
+                      [class.bg-slate-800]="account.role === 'user'"
+                      [class.text-slate-200]="account.role === 'user'"
+                    >
+                      {{ account.role === 'admin' ? 'AD' : 'US' }}
+                    </span>
+                    @if (loading() && quickLoginRole() === account.role) {
+                      <span
+                        class="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-cyan-400/30 border-t-cyan-600"
+                        aria-hidden="true"
+                      ></span>
+                    }
+                  </span>
+                  <span class="min-w-0">
+                    <span class="block text-sm font-semibold text-slate-900">{{ account.label }}</span>
+                    <span class="mt-0.5 block truncate font-mono text-[10px] text-slate-500">
+                      {{ account.email }}
+                    </span>
+                    <span class="mt-1 line-clamp-2 text-[11px] leading-snug text-slate-500">
+                      {{ account.hint }}
+                    </span>
+                  </span>
+                </button>
+              }
+            </div>
+          </section>
+        }
+
+        <p class="mt-10 border-t border-slate-300/80 pt-6 text-xs leading-relaxed text-slate-500">
+          Acceso restringido a personal autorizado. Si no puedes entrar, contacta con
+          <span class="font-medium text-slate-700">Sistemas / RRHH</span>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Barra móvil: flujo resumido -->
+    <div
+      class="border-t border-slate-300/60 bg-[#e8ebef] px-6 py-4 lg:hidden"
+      aria-hidden="true"
+    >
+      <div class="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-wider text-slate-500">
+        @for (step of workflowSteps; track step.code; let last = $last) {
+          <span class="text-slate-700">{{ step.label }}</span>
+          @if (!last) {
+            <span class="text-cyan-600/60">→</span>
+          }
+        }
+      </div>
+    </div>
+  </main>
+</div>

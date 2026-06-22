@@ -1,0 +1,14 @@
+# package-lock.json (@angular/* 21.2.x) exige Node ^20.19 || ^22.12 || >=24
+FROM node:22-bookworm
+
+WORKDIR /app
+
+COPY frontend/package.json frontend/package-lock.json ./
+
+RUN npm ci
+
+COPY frontend/ .
+
+EXPOSE 4200
+
+CMD ["npm", "start", "--", "--host", "0.0.0.0", "--port", "4200"]

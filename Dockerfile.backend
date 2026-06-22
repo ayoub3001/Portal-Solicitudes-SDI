@@ -1,0 +1,46 @@
+# composer.lock incluye Symfony 8.1 → requiere PHP >= 8.4.1 (composer.json solo indica ^8.3)
+FROM php:8.4-cli-bookworm
+
+# Dependencias del sistema y extensiones PHP
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    libpq-dev \
+    libssl-dev \
+    libzip-dev \
+    postgresql-client \
+    unzip \
+    && docker-php-ext-install -j"$(nproc)" bcmath pcntl pdo_pgsql pgsql zip \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb \
+    && apt-get purge -y --auto-remove \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+# Capa de dependencias (sin ejecutar scripts que llaman a artisan)
+COPY backend/composer.json backend/composer.lock ./
+RUN composer install --no-scripts --no-interaction --prefer-dist
+
+# Código de la aplicación
+COPY backend/ .
+
+# Directorios escribibles antes de package:discover
+RUN mkdir -p storage/framework/{sessions,views,cache/data} storage/logs bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+RUN composer dump-autoload --no-scripts --no-interaction \
+    && php artisan package:discover --no-interaction
+
+COPY docker/entrypoint-backend.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=90s --retries=5 \
+  CMD curl -f http://127.0.0.1:8000/up || exit 1
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

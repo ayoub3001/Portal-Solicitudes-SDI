@@ -4,6 +4,19 @@ Aplicación full-stack para gestionar solicitudes internas en una empresa tecnol
 
 ---
 
+## Objetivo
+
+Desarrollar un portal donde los usuarios puedan:
+
+- Crear solicitudes.
+- Adjuntar documentación.
+- Firmarlas digitalmente.
+- Consultar su estado.
+
+Los administradores pueden revisar, aprobar o rechazar las solicitudes.
+
+---
+
 ## Requisitos
 
 - **Docker Engine** 24+
@@ -146,49 +159,37 @@ php artisan test
 
 ```
 portalSolicitudes/
-├── backend/                    # API Laravel 13 + JWT
-│   ├── app/
-│   │   ├── Http/Controllers/   # Auth, RequestM
-│   │   ├── Http/Resources/     # UserResource, RequestResource
-│   │   ├── Http/Requests/      # Validación (SolicitudRequest, SignatureRequest)
-│   │   ├── Policies/           # Autorización según rol y dueño
-│   │   └── Http/Middleware/    # CheckRole, LogActivity
-│   ├── database/
-│   │   ├── migrations/
-│   │   ├── seeders/            # UsersSeed, SolicitudesSeed
-│   │   └── factories/          # User, RequestM, TestAssetFactory
-│   ├── routes/api.php
-│   └── tests/Feature/          # AuthApiTest, RequestApiTest
-├── frontend/                   # Angular 21 standalone
-│   └── src/app/
-│       ├── core/               # models, services, guards, interceptors, state
-│       ├── features/           # auth, dashboard, requests
-│       └── shared/             # signature-pad, etc.
-├── docker-compose.yml          # postgres + mongodb + backend + frontend
-├── Dockerfile.backend
-├── Dockerfile.frontend
-└── docker/entrypoint-backend.sh
+├── backend/
+├── frontend/
+├── docker-compose.yml
+└── docker/
 ```
 
-### Flujo de negocio
+---
+
+## Flujo de negocio
 
 1. Un usuario crea una solicitud (`pending`) con título, descripción, fecha y documento opcional.
 2. El propio usuario la puede firmar desde el navegador (`signed`).
 3. Un Admin aprueba (`approved`) o rechaza (`rejected`).
 
-### Stack técnico
+---
 
-| Capa              | Tecnología                                     |
-| ----------------- | ---------------------------------------------- |
-| Backend           | Laravel 13, PHP 8.4, JWT (`tymon/jwt-auth`)    |
-| API docs          | Scramble (OpenAPI)                             |
-| BD principal      | PostgreSQL 16                                  |
-| Logs de actividad | MongoDB 7                                      |
-| Frontend          | Angular 21 standalone, Signals, Tailwind CSS 4 |
-| Calendario        | FullCalendar 6                                 |
-| Contenedores      | Docker Compose                                 |
+## Stack técnico
 
-### Frontend — capas principales
+| Capa              | Tecnología                                         |
+| ----------------- | --------------------------------------------------|
+| Backend           | Laravel 13, PHP 8.4, JWT (`tymon/jwt-auth`)        |
+| API docs          | Scramble (OpenAPI)                                 |
+| BD principal      | PostgreSQL 16                                      |
+| Logs de actividad | MongoDB 7                                          |
+| Frontend          | Angular standalone + Signals, Tailwind CSS 4       |
+| Calendario        | FullCalendar 6                                     |
+| Contenedores      | Docker Compose                                     |
+
+---
+
+## Frontend — capas principales
 
 - **Models / Services:** tipado alineado con OpenAPI (`AuthService`, `RequestService`).
 - **Interceptors:** `JwtInterceptor` (Bearer token), `ErrorInterceptor` (401/403/422/500).
@@ -196,7 +197,9 @@ portalSolicitudes/
 - **State:** `AuthState` con Signals.
 - **Dashboard:** calendario y detalle de solicitudes, firma y acciones de admin.
 
-### Backend — autorización
+---
+
+## Backend — autorización
 
 - **Policies** (`RequestPolicy`): controla ver, editar, firmar y aprobar según rol y estado.
 - **Middleware** `role:admin` en rutas de aprobación/rechazo.
@@ -205,7 +208,6 @@ portalSolicitudes/
 ---
 
 ## Decisiones técnicas
-
 
 | Decisión                      | Motivo                                                                                        |
 | ----------------------------- | --------------------------------------------------------------------------------------------- |
@@ -219,13 +221,15 @@ portalSolicitudes/
 
 ---
 
-## Uso de IA en el proyecto
+## Uso de IA
 
-| Área                | Cómo se usó la IA                                                                                                                                                                                             |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Frontend**        | IA para acelerar UI y parte de integración con FullCalendar (tras definir la arquitectura manualmente).                                                                 |
-| **Backend**         | IA para generar seeders, factories de archivos de ejemplo y tests Feature.                                                                                                |
-| **Revisión manual** | Toda la lógica de negocio, policies y arquitectura revisada y ajustada a mano.                                                                                           |
+Se utilizó IA como herramienta de apoyo para acelerar tareas repetitivas, principalmente:
+
+- Generación inicial de tests.
+- Creación de datos de prueba (seeders y factories).
+- Apoyo puntual en maquetación de componentes Angular.
+
+Toda la lógica de negocio, arquitectura, modelos de datos, rutas, autorización y revisión final del código fueron realizadas y validadas manualmente.
 
 ---
 
